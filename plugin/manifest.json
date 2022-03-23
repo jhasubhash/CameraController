@@ -1,0 +1,106 @@
+{
+  "id": "88abba36",
+  "name": "Camera Controller",
+  "version": "1.0.0",
+  "main": "index.html",
+  "manifestVersion": 4,
+  "host": [
+    {
+      "app": "PS",
+      "minVersion": "22.0.0"
+    }
+  ],
+  "entrypoints": [
+    {
+      "type": "panel",
+      "id": "cameraController",
+      "label": {
+        "default": "Camera Controller"
+      },
+      "minimumSize": {
+        "width": 230,
+        "height": 200
+      },
+      "maximumSize": {
+        "width": 2000,
+        "height": 2000
+      },
+      "preferredDockedSize": {
+        "width": 230,
+        "height": 300
+      },
+      "preferredFloatingSize": {
+        "width": 230,
+        "height": 300
+      },
+      "icons": [
+        {
+          "width": 32,
+          "height": 32,
+          "path": "icons/icon_D.png",
+          "scale": [
+            1,
+            2
+          ],
+          "theme": [
+            "dark",
+            "darkest"
+          ],
+          "species": [
+            "generic"
+          ]
+        },
+        {
+          "width": 32,
+          "height": 32,
+          "path": "icons/icon_N.png",
+          "scale": [
+            1,
+            2
+          ],
+          "theme": [
+            "lightest",
+            "light"
+          ],
+          "species": [
+            "generic"
+          ]
+        }
+      ]
+    }
+  ],
+  "icons": [
+    {
+      "width": 32,
+      "height": 32,
+      "path": "icons/icon_D.png",
+      "scale": [
+        1,
+        2
+      ],
+      "theme": [
+        "dark",
+        "darkest"
+      ],
+      "species": [
+        "generic"
+      ]
+    },
+    {
+      "width": 32,
+      "height": 32,
+      "path": "icons/icon_N.png",
+      "scale": [
+        1,
+        2
+      ],
+      "theme": [
+        "lightest",
+        "light"
+      ],
+      "species": [
+        "generic"
+      ]
+    }
+  ]
+}

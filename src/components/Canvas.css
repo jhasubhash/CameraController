@@ -1,0 +1,13 @@
+.layer-img{
+    position: relative; 
+    left: -50%;
+}
+
+.layer-img-container{
+    position: absolute; 
+    left: 50%;
+}
+.view-container{
+    height: 40%;
+    position: relative;
+}
