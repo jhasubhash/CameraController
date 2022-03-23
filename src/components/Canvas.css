@@ -1,13 +1,14 @@
 .layer-img{
     position: relative; 
-    left: -50%;
 }
 
 .layer-img-container{
     position: absolute; 
-    left: 50%;
 }
 .view-container{
-    height: 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60%;
     position: relative;
 }

@@ -15,19 +15,36 @@ export const Canvas = (props) => {
     const [docHeight, setDocHeight] = useState(0);
     const [docWidth, setDocWidth] = useState(0);
     const [dimensionMap, setDimensionMap] = useState(() => new Map());
+    const [layerData, setLayerData] = useState([]);
+
     let aspect = docHeight/ docWidth;
     let previewWidth = 300;
     let previewHeight = aspect * previewWidth;
-
     let shiftX = props.shiftX;
     let shiftY = props.shiftY;
     let depth = props.depth;
 
-    let arr = [1,2,3,4];
 
     const setDocData = () => {
         setDocHeight(app.activeDocument.height);
         setDocWidth(app.activeDocument.width);
+    }
+
+    const populateLayerData = () => {
+        let newLayerData = [];
+        app.activeDocument.layers.forEach(layer => {
+            newLayerData.push({
+                _id : layer._id,
+                name : layer.name,
+                bounds : {
+                    left : layer.bounds.left,
+                    right : layer.bounds.right,
+                    top : layer.bounds.top,
+                    bottom : layer.bounds.bottom
+                }
+            })
+        });
+        setLayerData(newLayerData);
     }
 
     useEffect(() => {
@@ -35,7 +52,7 @@ export const Canvas = (props) => {
         let diff = shiftX- lastShiftX;
         lastShiftX = shiftX;
         let nmap = new Map();
-        app.activeDocument.layers.slice().reverse().forEach(layer => {
+        layerData.slice().reverse().forEach(layer => {
             nmap[layer._id] = {
                 top: dimensionMap[layer._id]? dimensionMap[layer._id].top : layer.bounds.top,
                 left: dimensionMap[layer._id]?dimensionMap[layer._id].left - d* diff : layer.bounds.left,
@@ -52,7 +69,7 @@ export const Canvas = (props) => {
         let diff = shiftY- lastShiftY;
         lastShiftY = shiftY;
         let nmap = new Map();
-        app.activeDocument.layers.slice().reverse().forEach(layer => {
+        layerData.slice().reverse().forEach(layer => {
             nmap[layer._id] = {
                 top: dimensionMap[layer._id]? dimensionMap[layer._id].top + d* diff: layer.bounds.top,
                 left: dimensionMap[layer._id]?dimensionMap[layer._id].left  : layer.bounds.left,
@@ -69,7 +86,7 @@ export const Canvas = (props) => {
         let diff = depth - lastDepth;
         lastDepth = depth;
         let nmap = new Map();
-        app.activeDocument.layers.forEach(layer => {
+        layerData.forEach(layer => {
             nmap[layer._id] = {
                 top: dimensionMap[layer._id]? dimensionMap[layer._id].top + d: layer.bounds.top,
                 left: dimensionMap[layer._id]?dimensionMap[layer._id].left + d  : layer.bounds.left,
@@ -84,7 +101,7 @@ export const Canvas = (props) => {
 
     const populateDimensionMap = () => {
         let newMap = new Map();
-        for (const layer of app.activeDocument.layers) {
+        for (const layer of layerData) {
             console.log(previewHeight);
             console.log(docHeight);
             newMap[layer._id] = layer.bounds;
@@ -113,7 +130,14 @@ export const Canvas = (props) => {
         }
     },[docHeight, docWidth])
 
+    useEffect(()=>{
+        console.log("regenerater pngs");
+        populateLayerData();
+        generatePNGs();
+    },[props.reset])
+
     useEffect(() => {
+        populateLayerData();
         setDocData();
         populateDimensionMap();
         generatePNGs();
@@ -133,31 +157,30 @@ export const Canvas = (props) => {
 
     return ( 
         <div className="view-container">
-            {imageGenerated && app.activeDocument.layers.map((layer,id) => (
-            <div className="layer-img-container">
-                <div className="layer-img">
-                <div style={{ 
-                    position: 'relative',
-                    width:previewWidth,
-                    height:previewHeight
-                }}>
-                <img data-index={id}  
-                    style={{
-                        'position': 'relative',
-                        "zIndex":(app.activeDocument.layers.length-id),
-                        "left" : dimensionMap[layer._id] ? dimensionMap[layer._id].left : 0,
-                        "top" : dimensionMap[layer._id] ? dimensionMap[layer._id].top : 0
-                    }} 
-                    key={id} 
-                    src={getLayerImgSrc(layer.name)} 
-                    width={dimensionMap[layer._id] ? (dimensionMap[layer._id].right - dimensionMap[layer._id].left) : 0} 
-                    height={dimensionMap[layer._id] ? (dimensionMap[layer._id].bottom -  dimensionMap[layer._id].top) : 0}
-                />
-                </div>
+        {imageGenerated && layerData.map((layer,id) => (
+        <div className="layer-img-container" 
+        key={id}>
+            <div className="layer-img">
+            <div style={{ 
+                position: 'relative',
+                width:previewWidth,
+                height:previewHeight
+            }}>
+            <img data-index={id}  
+                style={{
+                    'position': 'relative',
+                    "zIndex":(layerData.length-id),
+                    "left" : dimensionMap[layer._id] ? dimensionMap[layer._id].left : 0,
+                    "top" : dimensionMap[layer._id] ? dimensionMap[layer._id].top : 0
+                }} 
+                src={getLayerImgSrc(layer.name)} 
+                width={dimensionMap[layer._id] ? (dimensionMap[layer._id].right - dimensionMap[layer._id].left) : 0} 
+                height={dimensionMap[layer._id] ? (dimensionMap[layer._id].bottom -  dimensionMap[layer._id].top) : 0}
+            />
             </div>
-            </div>
-            ))}
         </div>
+        </div>
+        ))}
+    </div>
      );
 }
-

@@ -33,19 +33,15 @@ export const CameraControl = (props) => {
     }
 
     return ( <>
-        <div>
-            <sp-body>{props.shiftX}</sp-body>
-            <sp-body>{props.shiftY}</sp-body>
-        </div>
-        <div>
+        <div style={{width:'100%'}}>
         <WC onInput={updateCamera}>
             <div className="depth-slider">
-                <sp-slider ref={cameraDepthRef} show-value="false" data-part="D" value={props.depth} min={0} max={10}>
+                <sp-slider ref={cameraDepthRef} show-value="false" data-part="D" value={props.depth} min={0} max={100}>
                     <sp-label slot="label">Scene Depth</sp-label>
                 </sp-slider>
             </div>
             <div className="shift-x-slider">
-                <sp-slider ref={cameraShiftXRef} show-value="true" data-part="X" value={props.shiftX} min={-100} max={100}>
+                <sp-slider ref={cameraShiftXRef} show-value="false" data-part="X" value={props.shiftX} min={-100} max={100}>
                     <sp-label slot="label">Horizontal Camera Shift</sp-label>
                 </sp-slider>
             </div>
@@ -55,6 +51,7 @@ export const CameraControl = (props) => {
                 </sp-slider>
             </div>
         </WC>
+            <sp-button onClick={props.reset}>Reset</sp-button>
         </div>
     </> );
 }

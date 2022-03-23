@@ -18,20 +18,20 @@
         "default": "Camera Controller"
       },
       "minimumSize": {
-        "width": 230,
-        "height": 200
+        "width": 500,
+        "height": 600
       },
       "maximumSize": {
         "width": 2000,
         "height": 2000
       },
       "preferredDockedSize": {
-        "width": 230,
-        "height": 300
+        "width": 500,
+        "height": 600
       },
       "preferredFloatingSize": {
-        "width": 230,
-        "height": 300
+        "width": 500,
+        "height": 600
       },
       "icons": [
         {
