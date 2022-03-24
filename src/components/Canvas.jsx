@@ -28,25 +28,29 @@ export const Canvas = (props) => {
     },[docHeight,docWidth])
 
     const setDocData = () => {
+        if(app.activeDocument){
         setDocHeight(app.activeDocument.height);
         setDocWidth(app.activeDocument.width);
+        }
     }
 
     const populateLayerData = () => {
         let newLayerData = [];
-        app.activeDocument.layers.forEach(layer => {
-            newLayerData.push({
-                _id : layer._id,
-                name : layer.name,
-                bounds : {
-                    left : layer.bounds.left,
-                    right : layer.bounds.right,
-                    top : layer.bounds.top,
-                    bottom : layer.bounds.bottom
-                }
-            })
-        });
-        setLayerData(newLayerData);
+        if(app.activeDocument){
+            app.activeDocument.layers.forEach(layer => {
+                newLayerData.push({
+                    _id : layer._id,
+                    name : layer.name,
+                    bounds : {
+                        left : layer.bounds.left,
+                        right : layer.bounds.right,
+                        top : layer.bounds.top,
+                        bottom : layer.bounds.bottom
+                    }
+                })
+            });
+            setLayerData(newLayerData);
+            }
     }
 
     useEffect(() => {
@@ -135,10 +139,12 @@ export const Canvas = (props) => {
     },[docHeight, docWidth, layerData])
 
     useEffect(()=>{
-        setImageGenerated(false);
-        setDocData();
-        populateLayerData();
-        generatePNGs();
+        if(app.activeDocument){
+            setImageGenerated(false);
+            setDocData();
+            populateLayerData();
+            generatePNGs();
+        }
     },[props.reset])
 
     useEffect(()=>{
@@ -163,10 +169,12 @@ export const Canvas = (props) => {
     }
 
     const loadScene = () => {
-        setImageGenerated(false);
-        setDocData();
-        populateLayerData();
-        generatePNGs();
+        if(app.activeDocument){
+            setImageGenerated(false);
+            setDocData();
+            populateLayerData();
+            generatePNGs();
+        }
     }
 
     return ( 
