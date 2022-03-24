@@ -163,6 +163,9 @@ export const Canvas = (props) => {
     }
 
     const loadScene = () => {
+        setImageGenerated(false);
+        setDocData();
+        populateLayerData();
         generatePNGs();
     }
 
