@@ -84,18 +84,20 @@ export const Canvas = (props) => {
     },[shiftY])
 
     useEffect(() => {
-        let d = 0;
+        let hd = 0;
+        let vd = 0;
         let diff = depth - lastDepth;
         lastDepth = depth;
         let nmap = new Map();
         layerData.forEach(layer => {
             nmap[layer._id] = {
-                top: dimensionMap[layer._id]? dimensionMap[layer._id].top + d: layer.bounds.top,
-                left: dimensionMap[layer._id]?dimensionMap[layer._id].left + d  : layer.bounds.left,
-                bottom: dimensionMap[layer._id]?dimensionMap[layer._id].bottom - d : layer.bounds.bottom,
-                right: dimensionMap[layer._id]?dimensionMap[layer._id].right  -d : layer.bounds.right
+                top: dimensionMap[layer._id]? dimensionMap[layer._id].top + vd: layer.bounds.top,
+                left: dimensionMap[layer._id]?dimensionMap[layer._id].left + hd  : layer.bounds.left,
+                bottom: dimensionMap[layer._id]?dimensionMap[layer._id].bottom - vd : layer.bounds.bottom,
+                right: dimensionMap[layer._id]?dimensionMap[layer._id].right  - hd : layer.bounds.right
             }
-            d += diff;
+            hd += diff * previewWidth/previewHeight;
+            vd += diff * previewHeight/previewWidth;
         });
         setDimensionMap(nmap);
     },[depth])
