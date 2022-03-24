@@ -1,5 +1,4 @@
 import React , { useState, useEffect, useRef } from "react";
-import {app, saveLayerAsPng, selectLayerByID, fs} from './Utils';
 import { WC } from "./WC.jsx";
 import './CameraControl.css';
 
@@ -51,7 +50,9 @@ export const CameraControl = (props) => {
                 </sp-slider>
             </div>
         </WC>
-            <sp-button onClick={props.reset}>Reset</sp-button>
+        <div className="reset-button">
+            <sp-button onClick={props.reset}>Refresh</sp-button>
+        </div>
         </div>
     </> );
 }

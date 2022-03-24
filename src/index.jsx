@@ -17,10 +17,8 @@ const cameraController =  new PanelController(() => <CameraController/>, { id: "
 entrypoints.setup({
     plugin: {
         create(plugin) {
-            /* optional */ console.log("created", plugin);
         },
         destroy() {
-            /* optional */ console.log("destroyed");
         }
     },
     commands: {

@@ -35,12 +35,10 @@ export const selectLayerByID = async (layerID, layerName) => {
   };
 
 export async function saveLayerAsPng(layer, saveFolder) {
-    console.log(layer.name);
     const { _id, name } = layer;
     await core.executeAsModal( async () => {
         let fileName = "img "+_id+".png";
         await selectLayerByID(_id, name);
-        console.log("layer selected "+ layer.name);
         const exportCommand = {
             _obj: 'exportSelectionAsFileTypePressed',
             _target: { _ref: 'layer', _enum: 'ordinal', _value: 'targetEnum' },

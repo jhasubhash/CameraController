@@ -1,6 +1,6 @@
 
 import React , { useState, useEffect, useRef } from "react";
-import {app, saveLayerAsPng, selectLayerByID, fs} from './Utils';
+import {app, saveLayerAsPng, selectLayerByID, fs, action} from './Utils';
 import './Canvas.css';
 
 
@@ -12,18 +12,20 @@ let lastShiftX = 0;
 export const Canvas = (props) => {
 
     const [imageGenerated, setImageGenerated] = useState(false);
-    const [docHeight, setDocHeight] = useState(0);
-    const [docWidth, setDocWidth] = useState(0);
+    const [docHeight, setDocHeight] = useState(1);
+    const [docWidth, setDocWidth] = useState(1);
     const [dimensionMap, setDimensionMap] = useState(() => new Map());
     const [layerData, setLayerData] = useState([]);
+    const [previewWidth, setPreviewWidth] = useState(300);
+    const [previewHeight, setPreviewHeight] = useState((docHeight/ docWidth) * previewWidth);
 
-    let aspect = docHeight/ docWidth;
-    let previewWidth = 300;
-    let previewHeight = aspect * previewWidth;
     let shiftX = props.shiftX;
     let shiftY = props.shiftY;
     let depth = props.depth;
 
+    useEffect(()=>{
+        setPreviewHeight((docHeight/ docWidth) * previewWidth);
+    },[docHeight,docWidth])
 
     const setDocData = () => {
         setDocHeight(app.activeDocument.height);
@@ -102,57 +104,64 @@ export const Canvas = (props) => {
     const populateDimensionMap = () => {
         let newMap = new Map();
         for (const layer of layerData) {
-            console.log(previewHeight);
-            console.log(docHeight);
             newMap[layer._id] = layer.bounds;
             newMap[layer._id].top *= previewHeight/docHeight;
             newMap[layer._id].bottom *= previewHeight/docHeight;
             newMap[layer._id].left *= previewWidth/docWidth;
             newMap[layer._id].right *= previewWidth/docWidth;
-            console.log(newMap[layer._id]);
         }
-       // console.log(newMap);
         setDimensionMap(newMap);
     }
 
     const generatePNGs = async () => {
         let saveFolder = await fs.getDataFolder();
-        for (const layer of app.activeDocument.layers) {
+        let enteries = await saveFolder.getEntries();
+        for(let idx=0; idx< enteries.length; idx++){
+            await enteries[idx].delete();
+        }
+        for (const layer of layerData) {
             await saveLayerAsPng(layer, saveFolder)
-            console.log("png generater for "+layer.name);
+            await new Promise(r => setTimeout(r, 100));
         }
         setImageGenerated(true);
     }
 
-     useEffect(() => {
+    useEffect(() => {
         populateDimensionMap();
         return () => {
         }
-    },[docHeight, docWidth])
+    },[docHeight, docWidth, layerData])
 
     useEffect(()=>{
-        console.log("regenerater pngs");
+        setImageGenerated(false);
+        setDocData();
         populateLayerData();
         generatePNGs();
     },[props.reset])
 
-    useEffect(() => {
-        populateLayerData();
+    useEffect(()=>{
+        setImageGenerated(false);
         setDocData();
+        populateLayerData();
+    },[props.resetSlider])
+
+    useEffect(() => {
+        setImageGenerated(false);
+        setDocData();
+        populateLayerData();
         populateDimensionMap();
-        generatePNGs();
+        //generatePNGs();
         return () => {
         }
     },[])
 
     const getLayerImgSrc = (fileName) => {
         let filepath = "plugin-data://PluginData//"+fileName+".png?"+Date.now();
-        //console.log(filepath);
         return filepath;
     }
 
-    const isDimensionValid = (id) => {
-        return dimensionMap[id];
+    const loadScene = () => {
+        generatePNGs();
     }
 
     return ( 
@@ -181,6 +190,11 @@ export const Canvas = (props) => {
         </div>
         </div>
         ))}
+        {!imageGenerated && 
+        <div className="reset-button">
+        <sp-button onClick={loadScene}>Load Scene</sp-button>
+        </div>
+        }
     </div>
      );
 }
